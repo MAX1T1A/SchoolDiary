@@ -1,0 +1,647 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Оптимизированный Gateway под frontend",
+        "title": "BFF Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/core/api/v1/weather/current": {
+            "get": {
+                "description": "Получение текущей погоды",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Core"
+                ],
+                "summary": "Получение текущей погоды",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "schema": {
+                            "$ref": "#/definitions/core.WeatherData"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/api/v1/authenticate": {
+            "post": {
+                "description": "Этот эндпоинт проверяет данные пользователя и возвращает JWT токен.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Аутентификация пользователя по логину и паролю.",
+                "parameters": [
+                    {
+                        "description": "Запрос аутентификации пользователя",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/users.UserAuthenticate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ, содержащий JWT токен в поле 'access'",
+                        "schema": {
+                            "$ref": "#/definitions/users.AuthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка валидации запроса",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка при генерации токена",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/zulu/api/v1/points": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Points"
+                ],
+                "summary": "Получение значений объектов",
+                "deprecated": true,
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "ID типов объектов для фильтрации",
+                        "name": "zws_type_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Timestamp для получения данных за конкретный период",
+                        "name": "timestamp",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/zulu.PointResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/zulu/api/v1/points/with_rawdata": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Points"
+                ],
+                "summary": "Получение значений объектов",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "ID типов объектов для фильтрации",
+                        "name": "zws_type_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Timestamp для получения данных за конкретный период",
+                        "name": "timestamp",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/zulu.PointResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/zulu/api/v1/points/{elem_id}/categories/{category_id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Points"
+                ],
+                "summary": "Получение данных для категорий",
+                "parameters": [
+                    {
+                        "enum": [
+                            "group",
+                            "keyvalue"
+                        ],
+                        "type": "string",
+                        "description": "Type of data",
+                        "name": "type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Timestamp для получения данных за конкретный период",
+                        "name": "timestamp",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ответ для type=group",
+                        "schema": {
+                            "$ref": "#/definitions/internal_facades_zulu.GetPointDataByCategoryGroup"
+                        }
+                    },
+                    "201": {
+                        "description": "Ответ для type=keyvalue",
+                        "schema": {
+                            "$ref": "#/definitions/zulu.GetPointDataByCategoryKeyvalue"
+                        }
+                    }
+                }
+            }
+        },
+        "/zulu/api/v1/points/{elem_id}/full": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Points"
+                ],
+                "summary": "Получение данных для раскрытой карточки",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/zulu.FullPoint"
+                        }
+                    }
+                }
+            }
+        },
+        "/zulu/api/v2/points/categories/{category_id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Points"
+                ],
+                "summary": "Получение значений объектов",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "ID типов объектов для фильтрации",
+                        "name": "zws_type_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Timestamp для получения данных за конкретный период",
+                        "name": "timestamp",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_facades_zulu.GetPointsDataCategoryResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/zulu/api/v2/points/{elem_id}/full": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Points"
+                ],
+                "summary": "Получение данных для раскрытой карточки",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/zulu.FullPoint"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "core.GetPointsDataResponseMeasurement": {
+            "type": "object",
+            "properties": {
+                "i": {
+                    "type": "number",
+                    "example": 53.24
+                },
+                "o": {
+                    "type": "number",
+                    "example": 45.12
+                }
+            }
+        },
+        "core.WeatherData": {
+            "type": "object",
+            "properties": {
+                "PASSKEY": {
+                    "type": "string"
+                },
+                "baromabsin": {
+                    "type": "string"
+                },
+                "baromrelin": {
+                    "type": "string"
+                },
+                "dailyrainin": {
+                    "type": "string"
+                },
+                "dateutc": {
+                    "type": "string"
+                },
+                "eventrainin": {
+                    "type": "string"
+                },
+                "freq": {
+                    "type": "string"
+                },
+                "hourlyrainin": {
+                    "type": "string"
+                },
+                "humidity": {
+                    "type": "string"
+                },
+                "humidityin": {
+                    "type": "string"
+                },
+                "interval": {
+                    "type": "string"
+                },
+                "maxdailygust": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "monthlyrainin": {
+                    "type": "string"
+                },
+                "rainratein": {
+                    "type": "string"
+                },
+                "runtime": {
+                    "type": "string"
+                },
+                "solarradiation": {
+                    "type": "string"
+                },
+                "stationtype": {
+                    "type": "string"
+                },
+                "tempf": {
+                    "type": "string"
+                },
+                "tempinf": {
+                    "type": "string"
+                },
+                "totalrainin": {
+                    "type": "string"
+                },
+                "uv": {
+                    "type": "string"
+                },
+                "weeklyrainin": {
+                    "type": "string"
+                },
+                "wh65batt": {
+                    "type": "string"
+                },
+                "winddir": {
+                    "type": "string"
+                },
+                "windgustmph": {
+                    "type": "string"
+                },
+                "windspeedmph": {
+                    "type": "string"
+                },
+                "yearlyrainin": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_facades_zulu.CalculatedData": {
+            "type": "object",
+            "properties": {
+                "in": {
+                    "type": "number"
+                },
+                "out": {
+                    "type": "number"
+                }
+            }
+        },
+        "internal_facades_zulu.CategoryMeasurements": {
+            "type": "object",
+            "properties": {
+                "measurements": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/internal_facades_zulu.GetPointsDataCategoryMeasurement"
+                    }
+                }
+            }
+        },
+        "internal_facades_zulu.Data": {
+            "type": "object",
+            "properties": {
+                "in": {
+                    "type": "number"
+                },
+                "out": {
+                    "type": "number"
+                }
+            }
+        },
+        "internal_facades_zulu.GetPointDataByCategoryGroup": {
+            "type": "object",
+            "properties": {
+                "measurements": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_facades_zulu.GroupMeasurement"
+                    }
+                }
+            }
+        },
+        "internal_facades_zulu.GetPointsDataCategoryMeasurement": {
+            "type": "object",
+            "properties": {
+                "calculated_data": {
+                    "$ref": "#/definitions/internal_facades_zulu.CalculatedData"
+                },
+                "data": {
+                    "$ref": "#/definitions/internal_facades_zulu.Data"
+                }
+            }
+        },
+        "internal_facades_zulu.GetPointsDataCategoryResponse": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/internal_facades_zulu.CategoryMeasurements"
+            }
+        },
+        "internal_facades_zulu.GroupMeasurement": {
+            "type": "object",
+            "properties": {
+                "calculated_data": {
+                    "$ref": "#/definitions/internal_facades_zulu.GroupMeasurementsCalculatedData"
+                },
+                "data": {
+                    "$ref": "#/definitions/internal_facades_zulu.GroupMeasurementsData"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "rn": {
+                    "type": "integer"
+                }
+            }
+        },
+        "internal_facades_zulu.GroupMeasurementsCalculatedData": {
+            "type": "object",
+            "properties": {
+                "in": {
+                    "type": "number"
+                },
+                "out": {
+                    "type": "number"
+                }
+            }
+        },
+        "internal_facades_zulu.GroupMeasurementsData": {
+            "type": "object",
+            "properties": {
+                "in": {
+                    "type": "number"
+                },
+                "out": {
+                    "type": "number"
+                }
+            }
+        },
+        "internal_facades_zulu.Measurement": {
+            "type": "object",
+            "properties": {
+                "calculated_data": {
+                    "$ref": "#/definitions/internal_facades_zulu.MeasurementCalculatedData"
+                },
+                "data": {
+                    "$ref": "#/definitions/zulu.MeasurementData2"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_facades_zulu.MeasurementCalculatedData": {
+            "type": "object",
+            "properties": {
+                "in": {
+                    "type": "number"
+                },
+                "out": {
+                    "type": "number"
+                }
+            }
+        },
+        "users.AuthResponse": {
+            "type": "object",
+            "properties": {
+                "access": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjYzOTgzOTQsInVzZXJfaWQiOjF9.1yKDMfobTV8pAOK6QFClZLRuOb44KtjoezgbBgvksBQ"
+                }
+            }
+        },
+        "users.UserAuthenticate": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "zulu.FullPoint": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "packets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/zulu.Packet"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "zulu.GetPointDataByCategoryKeyvalue": {
+            "type": "object",
+            "properties": {
+                "measurements": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/zulu.MeasurementKeyvalue"
+                    }
+                }
+            }
+        },
+        "zulu.MeasurementData2": {
+            "type": "object",
+            "properties": {
+                "in": {
+                    "type": "number"
+                },
+                "out": {
+                    "type": "number"
+                }
+            }
+        },
+        "zulu.MeasurementKeyvalue": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Температура"
+                },
+                "rn": {
+                    "type": "integer"
+                },
+                "source": {
+                    "type": "string",
+                    "example": "zulu/scada"
+                },
+                "unit": {
+                    "type": "string",
+                    "example": "атм"
+                },
+                "value": {}
+            }
+        },
+        "zulu.Packet": {
+            "type": "object",
+            "properties": {
+                "datetime": {
+                    "type": "string"
+                },
+                "iscopied": {
+                    "type": "boolean"
+                },
+                "measurements": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_facades_zulu.Measurement"
+                    }
+                }
+            }
+        },
+        "zulu.PointResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "Улица Пушкина 12"
+                },
+                "coordinates": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "example": [
+                        55.751244,
+                        37.618423
+                    ]
+                },
+                "elem_id": {
+                    "type": "integer"
+                },
+                "has_accident": {
+                    "type": "boolean"
+                },
+                "measurement_groups": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/core.GetPointsDataResponseMeasurement"
+                    }
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Котельная 22"
+                },
+                "type": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

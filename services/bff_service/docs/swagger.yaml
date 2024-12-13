@@ -1,0 +1,423 @@
+definitions:
+  core.GetPointsDataResponseMeasurement:
+    properties:
+      i:
+        example: 53.24
+        type: number
+      o:
+        example: 45.12
+        type: number
+    type: object
+  core.WeatherData:
+    properties:
+      PASSKEY:
+        type: string
+      baromabsin:
+        type: string
+      baromrelin:
+        type: string
+      dailyrainin:
+        type: string
+      dateutc:
+        type: string
+      eventrainin:
+        type: string
+      freq:
+        type: string
+      hourlyrainin:
+        type: string
+      humidity:
+        type: string
+      humidityin:
+        type: string
+      interval:
+        type: string
+      maxdailygust:
+        type: string
+      model:
+        type: string
+      monthlyrainin:
+        type: string
+      rainratein:
+        type: string
+      runtime:
+        type: string
+      solarradiation:
+        type: string
+      stationtype:
+        type: string
+      tempf:
+        type: string
+      tempinf:
+        type: string
+      totalrainin:
+        type: string
+      uv:
+        type: string
+      weeklyrainin:
+        type: string
+      wh65batt:
+        type: string
+      winddir:
+        type: string
+      windgustmph:
+        type: string
+      windspeedmph:
+        type: string
+      yearlyrainin:
+        type: string
+    type: object
+  internal_facades_zulu.CalculatedData:
+    properties:
+      in:
+        type: number
+      out:
+        type: number
+    type: object
+  internal_facades_zulu.CategoryMeasurements:
+    properties:
+      measurements:
+        additionalProperties:
+          $ref: '#/definitions/internal_facades_zulu.GetPointsDataCategoryMeasurement'
+        type: object
+    type: object
+  internal_facades_zulu.Data:
+    properties:
+      in:
+        type: number
+      out:
+        type: number
+    type: object
+  internal_facades_zulu.GetPointDataByCategoryGroup:
+    properties:
+      measurements:
+        items:
+          $ref: '#/definitions/internal_facades_zulu.GroupMeasurement'
+        type: array
+    type: object
+  internal_facades_zulu.GetPointsDataCategoryMeasurement:
+    properties:
+      calculated_data:
+        $ref: '#/definitions/internal_facades_zulu.CalculatedData'
+      data:
+        $ref: '#/definitions/internal_facades_zulu.Data'
+    type: object
+  internal_facades_zulu.GetPointsDataCategoryResponse:
+    additionalProperties:
+      $ref: '#/definitions/internal_facades_zulu.CategoryMeasurements'
+    type: object
+  internal_facades_zulu.GroupMeasurement:
+    properties:
+      calculated_data:
+        $ref: '#/definitions/internal_facades_zulu.GroupMeasurementsCalculatedData'
+      data:
+        $ref: '#/definitions/internal_facades_zulu.GroupMeasurementsData'
+      id:
+        type: string
+      rn:
+        type: integer
+    type: object
+  internal_facades_zulu.GroupMeasurementsCalculatedData:
+    properties:
+      in:
+        type: number
+      out:
+        type: number
+    type: object
+  internal_facades_zulu.GroupMeasurementsData:
+    properties:
+      in:
+        type: number
+      out:
+        type: number
+    type: object
+  internal_facades_zulu.Measurement:
+    properties:
+      calculated_data:
+        $ref: '#/definitions/internal_facades_zulu.MeasurementCalculatedData'
+      data:
+        $ref: '#/definitions/zulu.MeasurementData2'
+      id:
+        type: string
+    type: object
+  internal_facades_zulu.MeasurementCalculatedData:
+    properties:
+      in:
+        type: number
+      out:
+        type: number
+    type: object
+  users.AuthResponse:
+    properties:
+      access:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjYzOTgzOTQsInVzZXJfaWQiOjF9.1yKDMfobTV8pAOK6QFClZLRuOb44KtjoezgbBgvksBQ
+        type: string
+    type: object
+  users.UserAuthenticate:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  zulu.FullPoint:
+    properties:
+      address:
+        type: string
+      packets:
+        items:
+          $ref: '#/definitions/zulu.Packet'
+        type: array
+      title:
+        type: string
+    type: object
+  zulu.GetPointDataByCategoryKeyvalue:
+    properties:
+      measurements:
+        items:
+          $ref: '#/definitions/zulu.MeasurementKeyvalue'
+        type: array
+    type: object
+  zulu.MeasurementData2:
+    properties:
+      in:
+        type: number
+      out:
+        type: number
+    type: object
+  zulu.MeasurementKeyvalue:
+    properties:
+      name:
+        example: Температура
+        type: string
+      rn:
+        type: integer
+      source:
+        example: zulu/scada
+        type: string
+      unit:
+        example: атм
+        type: string
+      value: {}
+    type: object
+  zulu.Packet:
+    properties:
+      datetime:
+        type: string
+      iscopied:
+        type: boolean
+      measurements:
+        items:
+          $ref: '#/definitions/internal_facades_zulu.Measurement'
+        type: array
+    type: object
+  zulu.PointResponse:
+    properties:
+      address:
+        example: Улица Пушкина 12
+        type: string
+      coordinates:
+        example:
+        - 55.751244
+        - 37.618423
+        items:
+          type: number
+        type: array
+      elem_id:
+        type: integer
+      has_accident:
+        type: boolean
+      measurement_groups:
+        additionalProperties:
+          $ref: '#/definitions/core.GetPointsDataResponseMeasurement'
+        type: object
+      title:
+        example: Котельная 22
+        type: string
+      type:
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: Оптимизированный Gateway под frontend
+  title: BFF Service API
+  version: "1.0"
+paths:
+  /core/api/v1/weather/current:
+    get:
+      description: Получение текущей погоды
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/core.WeatherData'
+      summary: Получение текущей погоды
+      tags:
+      - Core
+  /users/api/v1/authenticate:
+    post:
+      consumes:
+      - application/json
+      description: Этот эндпоинт проверяет данные пользователя и возвращает JWT токен.
+      parameters:
+      - description: Запрос аутентификации пользователя
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.UserAuthenticate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный ответ, содержащий JWT токен в поле 'access'
+          schema:
+            $ref: '#/definitions/users.AuthResponse'
+        "400":
+          description: Ошибка валидации запроса
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Ошибка при генерации токена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Аутентификация пользователя по логину и паролю.
+      tags:
+      - Users
+  /zulu/api/v1/points:
+    get:
+      deprecated: true
+      parameters:
+      - collectionFormat: csv
+        description: ID типов объектов для фильтрации
+        in: query
+        items:
+          type: integer
+        name: zws_type_ids
+        type: array
+      - description: Timestamp для получения данных за конкретный период
+        in: query
+        name: timestamp
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/zulu.PointResponse'
+            type: array
+      summary: Получение значений объектов
+      tags:
+      - Points
+  /zulu/api/v1/points/{elem_id}/categories/{category_id}:
+    get:
+      parameters:
+      - description: Type of data
+        enum:
+        - group
+        - keyvalue
+        in: query
+        name: type
+        required: true
+        type: string
+      - description: Timestamp для получения данных за конкретный период
+        in: query
+        name: timestamp
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ответ для type=group
+          schema:
+            $ref: '#/definitions/internal_facades_zulu.GetPointDataByCategoryGroup'
+        "201":
+          description: Ответ для type=keyvalue
+          schema:
+            $ref: '#/definitions/zulu.GetPointDataByCategoryKeyvalue'
+      summary: Получение данных для категорий
+      tags:
+      - Points
+  /zulu/api/v1/points/{elem_id}/full:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/zulu.FullPoint'
+      summary: Получение данных для раскрытой карточки
+      tags:
+      - Points
+  /zulu/api/v1/points/with_rawdata:
+    get:
+      parameters:
+      - collectionFormat: csv
+        description: ID типов объектов для фильтрации
+        in: query
+        items:
+          type: integer
+        name: zws_type_id
+        type: array
+      - description: Timestamp для получения данных за конкретный период
+        in: query
+        name: timestamp
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/zulu.PointResponse'
+            type: array
+      summary: Получение значений объектов
+      tags:
+      - Points
+  /zulu/api/v2/points/{elem_id}/full:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/zulu.FullPoint'
+      summary: Получение данных для раскрытой карточки
+      tags:
+      - Points
+  /zulu/api/v2/points/categories/{category_id}:
+    get:
+      parameters:
+      - collectionFormat: csv
+        description: ID типов объектов для фильтрации
+        in: query
+        items:
+          type: integer
+        name: zws_type_ids
+        type: array
+      - description: Timestamp для получения данных за конкретный период
+        in: query
+        name: timestamp
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_facades_zulu.GetPointsDataCategoryResponse'
+      summary: Получение значений объектов
+      tags:
+      - Points
+swagger: "2.0"

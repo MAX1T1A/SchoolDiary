@@ -1,0 +1,171 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API сервис для управления пользователями",
+        "title": "User Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/users/api/v1/authenticate": {
+            "post": {
+                "description": "Этот эндпоинт проверить данные пользователя и вернуть ответ на бфф.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Internal"
+                ],
+                "summary": "Аутентификация пользователя по логину и паролю.",
+                "parameters": [
+                    {
+                        "description": "Запрос аутентификации пользователя",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserAuthenticateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация для jwt токена.",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserAuthenticateResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/api/v1/settings": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Получение настроек пользователя",
+                "responses": {
+                    "200": {
+                        "description": "Настройки",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserSettingsResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Обновление настроек пользователя",
+                "parameters": [
+                    {
+                        "description": "Запрос на обновление",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserSettingsUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.UserAuthenticateRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserAuthenticateResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.UserSettingsResponse": {
+            "type": "object",
+            "properties": {
+                "bounding_box_bottom_right_lat": {
+                    "type": "number"
+                },
+                "bounding_box_bottom_right_lon": {
+                    "type": "number"
+                },
+                "bounding_box_top_left_lat": {
+                    "type": "number"
+                },
+                "bounding_box_top_left_lon": {
+                    "type": "number"
+                },
+                "default_center_lat": {
+                    "type": "number"
+                },
+                "default_center_lon": {
+                    "type": "number"
+                },
+                "default_zoom": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.UserSettingsUpdate": {
+            "type": "object",
+            "properties": {
+                "bounding_box_bottom_right_lat": {
+                    "type": "number"
+                },
+                "bounding_box_bottom_right_lon": {
+                    "type": "number"
+                },
+                "bounding_box_top_left_lat": {
+                    "type": "number"
+                },
+                "bounding_box_top_left_lon": {
+                    "type": "number"
+                },
+                "default_center_lat": {
+                    "type": "number"
+                },
+                "default_center_lon": {
+                    "type": "number"
+                },
+                "default_zoom": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "description": "Ручки с этим тегом являются внутренними и не предназначены для использования фронтендом. Почти всегда внутри BFF API существует ручка с аналогичным путем для публичного использования.",
+            "name": "Internal"
+        }
+    ]
+}

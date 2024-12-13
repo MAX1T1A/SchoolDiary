@@ -1,0 +1,31 @@
+version: "3"
+
+vars:
+  ENV: "local"
+  ENV_FILE: "env/{{.ENV}}.sh"
+  COMPOSE_FILE: "docker/{{.ENV}}-docker-compose.yml"
+
+tasks:
+  run:
+    desc: "Запуск среды. Пример: task run ENV=local"
+    vars:
+      ENV: "{{.ENV}}"
+    preconditions:
+      - sh: test -f {{.ENV_FILE}} && test -f {{.COMPOSE_FILE}}
+        msg: |
+          Указанная среда '{{.ENV}}' недоступна. 
+          Доступные среды: task list-envs.
+          Попробуйте указать одну из доступных сред через ENV=<среда>.
+    cmds:
+      - source {{.ENV_FILE}} && docker compose -f {{.COMPOSE_FILE}} up -d
+
+  build:
+    desc: "Запуск среды с опцией сборки. Пример: task build ENV=local"
+    vars:
+      ENV: "{{.ENV}}"
+    cmds:
+      - source {{.ENV_FILE}} && docker compose -f {{.COMPOSE_FILE}} up --build -d
+  doc:
+    desc: "Генерация документации. Ссылка на установку: https://github.com/swaggo/swag"
+    cmds:
+      - swag init -g cmd/main.go
