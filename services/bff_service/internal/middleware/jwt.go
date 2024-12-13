@@ -11,9 +11,10 @@ import (
 )
 
 var COOKIE_AUTH = []string{"/path1"}
-var NO_HEADER_AUTH_TRIE = []string{"/users/api/v1/authenticate",
+var NO_HEADER_AUTH_TRIE = []string{
+	"/users/api/v1/authenticate",
+	"/users/api/v1/register",
 	"/bff/api/docs",
-
 	"/users/api/docs",
 	"/zulu/api/docs",
 	"/core/api/docs",
