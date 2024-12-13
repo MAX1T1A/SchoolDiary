@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23349AEB'/></svg>"
+      type="image/svg+xml"
+    />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Микросервисы API</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #edf2f7;
+        margin: 0;
+        padding: 0;
+        transition: background-color 0.1s ease;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 70px auto;
+        padding: 40px;
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+      }
+
+      .container:hover {
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+      }
+
+      .header {
+        height: 100px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .header h1 {
+        font-size: 32px;
+        color: #2b6cb0;
+        margin: 0;
+      }
+
+      .service {
+        border-bottom: 2px solid #e2e8f0;
+        padding: 20px 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.1s ease-in-out;
+      }
+
+      .service:hover {
+        background-color: #f7fafc;
+        transform: translateY(-0.5px);
+      }
+
+      .service-content {
+        flex: 1;
+      }
+
+      .service-name {
+        font-size: 22px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 10px;
+      }
+
+      .service-description {
+        color: #4a5568;
+        margin-bottom: 15px;
+      }
+
+      .links {
+        align-items: center;
+        gap: 15px;
+      }
+
+      .links a {
+        color: #3182ce;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: color 0.1s ease-in-out;
+        white-space: nowrap;
+        margin-left: 0;
+      }
+
+      .links a:hover {
+        color: #2c5282;
+      }
+
+      .wiki-icon {
+        color: #ed8936;
+      }
+
+      body.dark-mode {
+        background-color: #202124;
+        color: #e8eaed;
+      }
+
+      .container.dark-mode {
+        background-color: #2d2e30;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+      }
+
+      .dark-mode .service:hover {
+        background-color: #373739;
+      }
+
+      .dark-mode .service {
+        border-bottom: 2px solid #373739;
+      }
+
+      .dark-mode .service-name,
+      .dark-mode .service-description,
+      .dark-mode .header h1 {
+        color: #b3b3b3;
+      }
+
+      .dark-mode .links a {
+        color: #8ab4f8;
+      }
+
+      .dark-mode .links a:hover {
+        color: #669df6;
+      }
+
+      .dark-mode .wiki-icon {
+        color: #cf6679;
+      }
+
+      .dark-mode #theme-toggle i {
+        transform: rotate(180deg);
+      }
+
+      #theme-toggle {
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        color: #2b6cb0;
+        font-size: 24px;
+        transition: color 0.1s ease;
+      }
+
+      #theme-toggle:hover {
+        color: #2c5282;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 25px auto;
+          padding: 20px;
+        }
+
+        .service {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .service-content,
+        .links {
+          margin-bottom: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Микросервисы API</h1>
+        <button id="theme-toggle" aria-label="Переключить тему">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+      {{range .Services}}
+      <a href="{{.documentationLink}}" style="text-decoration: none; color: inherit">
+        <div class="service">
+          <div class="service-content">
+            <span class="service-name">{{.name}}</span>
+            <p class="service-description">{{.description}}</p>
+          </div>
+          <div class="links">
+            <a href="{{.WikiLink}}" style="color: inherit"> <i class="fas fa-info-circle wiki-icon"></i> Вики </a>
+          </div>
+        </div>
+      </a>
+      {{end}}
+    </div>
+
+    <script>
+      document.getElementById("theme-toggle").addEventListener("click", function () {
+        var body = document.body;
+        var container = document.querySelector(".container");
+        var themeToggleIcon = document.querySelector("#theme-toggle i");
+
+        body.classList.toggle("dark-mode");
+        container.classList.toggle("dark-mode");
+
+        if (body.classList.contains("dark-mode")) {
+          themeToggleIcon.classList.remove("fa-moon");
+          themeToggleIcon.classList.add("fa-sun");
+          localStorage.setItem("theme", "dark");
+        } else {
+          themeToggleIcon.classList.remove("fa-sun");
+          themeToggleIcon.classList.add("fa-moon");
+          localStorage.setItem("theme", "light");
+        }
+      });
+      window.onload = function () {
+        var body = document.body;
+        var container = document.querySelector(".container");
+        var themeToggleIcon = document.querySelector("#theme-toggle i");
+        var savedTheme = localStorage.getItem("theme");
+
+        if (savedTheme === "dark") {
+          body.classList.add("dark-mode");
+          container.classList.add("dark-mode");
+          themeToggleIcon.classList.remove("fa-moon");
+          themeToggleIcon.classList.add("fa-sun");
+        } else {
+          body.classList.remove("dark-mode");
+          container.classList.remove("dark-mode");
+          themeToggleIcon.classList.remove("fa-sun");
+          themeToggleIcon.classList.add("fa-moon");
+        }
+      };
+    </script>
+  </body>
+</html>

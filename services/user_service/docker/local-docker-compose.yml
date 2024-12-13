@@ -1,0 +1,45 @@
+name: user_service_user_service
+
+services:
+  user_service:
+    restart: unless-stopped
+    depends_on:
+      - user_db
+    ports:
+      - "${USER__HTTP_PORT}:${USER__HTTP_PORT}"
+    build:
+      context: ../
+      dockerfile: air.Dockerfile
+    environment:
+      - USER__POSTGRES_DB_LOGIN
+      - USER__POSTGRES_DB_PASSWORD
+      - USER__POSTGRES_DB_HOST=user_db
+      - USER__POSTGRES_DB_PORT=5432
+      - USER__POSTGRES_DB_NAME
+      - USER__MAX_CONNECTIONS
+      - USER__CONNECTION_IDLE_TIME_SEC
+      - USER__POSTGRESQL_URL=postgres://${USER__POSTGRES_DB_LOGIN}:${USER__POSTGRES_DB_PASSWORD}@${USER__POSTGRES_DB_HOST}:5432/${USER__POSTGRES_DB_NAME}?sslmode=disable
+      - USER__HTTP_HOST
+      - USER__HTTP_PORT
+      - GIN_MODE
+    volumes:
+      - ../pkg:/code/pkg
+      - ../cmd:/code/cmd
+      - ../docs:/code/docs
+      - ../internal:/code/internal
+
+  user_db:
+    hostname: ${USER__POSTGRES_DB_HOST}
+    command: ["postgres", "-c", "max_prepared_transactions=1"]
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${USER__POSTGRES_DB_LOGIN}
+      - POSTGRES_PASSWORD=${USER__POSTGRES_DB_PASSWORD}
+      - POSTGRES_DB=${USER__POSTGRES_DB_NAME}
+    ports:
+      - "${USER__POSTGRES_DB_PORT}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      timeout: 2s
+      retries: 15

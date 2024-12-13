@@ -1,0 +1,112 @@
+definitions:
+  models.UserAuthenticateRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.UserAuthenticateResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  models.UserSettingsResponse:
+    properties:
+      bounding_box_bottom_right_lat:
+        type: number
+      bounding_box_bottom_right_lon:
+        type: number
+      bounding_box_top_left_lat:
+        type: number
+      bounding_box_top_left_lon:
+        type: number
+      default_center_lat:
+        type: number
+      default_center_lon:
+        type: number
+      default_zoom:
+        type: integer
+    type: object
+  models.UserSettingsUpdate:
+    properties:
+      bounding_box_bottom_right_lat:
+        type: number
+      bounding_box_bottom_right_lon:
+        type: number
+      bounding_box_top_left_lat:
+        type: number
+      bounding_box_top_left_lon:
+        type: number
+      default_center_lat:
+        type: number
+      default_center_lon:
+        type: number
+      default_zoom:
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: API сервис для управления пользователями
+  title: User Service API
+  version: "1.0"
+paths:
+  /users/api/v1/authenticate:
+    post:
+      consumes:
+      - application/json
+      description: Этот эндпоинт проверить данные пользователя и вернуть ответ на
+        бфф.
+      parameters:
+      - description: Запрос аутентификации пользователя
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserAuthenticateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация для jwt токена.
+          schema:
+            $ref: '#/definitions/models.UserAuthenticateResponse'
+      summary: Аутентификация пользователя по логину и паролю.
+      tags:
+      - Internal
+  /users/api/v1/settings:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Настройки
+          schema:
+            $ref: '#/definitions/models.UserSettingsResponse'
+      summary: Получение настроек пользователя
+      tags:
+      - Settings
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Запрос на обновление
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserSettingsUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Обновление настроек пользователя
+      tags:
+      - Settings
+swagger: "2.0"
+tags:
+- description: Ручки с этим тегом являются внутренними и не предназначены для использования
+    фронтендом. Почти всегда внутри BFF API существует ручка с аналогичным путем для
+    публичного использования.
+  name: Internal

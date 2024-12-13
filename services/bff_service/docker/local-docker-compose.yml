@@ -1,0 +1,31 @@
+name: bff_service_bff_service
+
+services:
+  bff_service:
+    restart: unless-stopped
+    build:
+      context: ../
+      dockerfile: air.Dockerfile
+    ports:
+      - "${BFF__HTTP_PORT}:${BFF__HTTP_PORT}"
+    environment:
+      - BFF__HTTP_HOST
+      - BFF__HTTP_PORT
+      - JWT_SECRET
+      - USERS_HTTP_SERVICE_URL
+    volumes:
+      - ../pkg:/code/pkg
+      - ../cmd:/code/cmd
+      - ../internal:/code/internal
+      - ../docs:/code/docs
+      - ../templates:/code/templates
+
+  nginx:
+    image: nginx:stable-alpine3.20
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./../nginx:/etc/nginx:ro
+    depends_on:
+      - bff_service
