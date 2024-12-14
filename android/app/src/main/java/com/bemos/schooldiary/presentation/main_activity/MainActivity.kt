@@ -1,4 +1,4 @@
-package com.bemos.schooldiary
+package com.bemos.schooldiary.presentation.main_activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -21,32 +21,45 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.bemos.schooldiary.data.remote.UserServiceApi
-import com.bemos.schooldiary.data.remote.retrofit.RetorofitUserService
+import com.bemos.schooldiary.presentation.di.app_component.appComponent
 import com.bemos.schooldiary.presentation.sign_in.SignInScreen
 import com.bemos.schooldiary.presentation.sign_up.SignUpSchoolChildrenScreen
-import com.bemos.schooldiary.presentation.sign_up.model.User
+import com.bemos.schooldiary.domain.models.User
+import com.bemos.schooldiary.presentation.sign_in.vm.factory.SignInViewModelFactory
+import com.bemos.schooldiary.presentation.sign_up.vm.factory.SignUpSchoolChildrenViewModelFactory
 import com.bemos.schooldiary.presentation.ui.utils.bottom_bar.BottomBar
+import com.bemos.schooldiary.shared.Constants.NAV_SIGN_IN
+import com.bemos.schooldiary.shared.Constants.NAV_SIGN_UP_CHILD
 import com.bemos.schooldiary.ui.theme.SchoolDiaryTheme
 import com.google.gson.Gson
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
 import java.io.IOException
+import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var signUpSchoolChildrenViewModelFactory: SignUpSchoolChildrenViewModelFactory
+
+    @Inject
+    lateinit var signInViewModelFactory: SignInViewModelFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        appComponent.inject(this)
+
         setContent {
             SchoolDiaryTheme {
                 val navController = rememberNavController()
-                var bottomBarState = remember {
+                val bottomBarState = remember {
                     mutableStateOf(true)
                 }
                 var isBottomBarVisible by remember {
@@ -65,110 +78,29 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         modifier = Modifier.padding(it),
                         navController = navController,
-                        startDestination = "signIn"
+                        startDestination = NAV_SIGN_IN
                     ) {
                         composable(
-                            route = "signUpChildren"
+                            route = NAV_SIGN_UP_CHILD
                         ) {
                             isBottomBarVisible = false
-                            SignUpSchoolChildrenScreen()
+                            SignUpSchoolChildrenScreen(
+                                signUpSchoolChildrenViewModelFactory = signUpSchoolChildrenViewModelFactory
+                            )
                         }
                         composable(
-                            route = "signIn"
+                            route = NAV_SIGN_IN
                         ) {
                             isBottomBarVisible = false
-                            SignInScreen()
+                            SignInScreen(
+                                signInViewModelFactory = signInViewModelFactory
+                            )
                         }
                     }
                 }
             }
         }
     }
-}
-fun main() {
-//    val retrofit = RetorofitUserService().getRetrofit()
-//    val api = retrofit.create(UserServiceApi::class.java)
-//
-//
-//    val user = User(
-//        surname = "Османов",
-//        name = "Микаил",
-//        patronymic = "Альбертович",
-//        email = "osmanov.design@yandex.ru"
-//    )
-//
-//    val call = api.registerUser(user)
-//
-//    call.enqueue(object : retrofit2.Callback<User> {
-//
-//        override fun onResponse(p0: retrofit2.Call<User>, p1: Response<User>) {
-//            println("successfully ${p1.message()}")
-//        }
-//
-//        override fun onFailure(p0: retrofit2.Call<User>, p1: Throwable) {
-//            println("error")
-//        }
-//    })
-
-    val client = OkHttpClient()
-
-    // Создаем объект пользователя
-    val user = User(
-        surname = "Османов",
-        name = "Микаил",
-        patronymic = "Альбертович",
-        email = "osmanov.design@yandex.ru"
-    )
-
-    val json = Gson().toJson(user)
-
-    val body = RequestBody.create(
-        "application/json; charset=utf-8".toMediaType(),
-        json
-    )
-
-    val request = Request.Builder()
-        .url("")  // Указываем URL
-        .get()
-        .build()
-
-    client.newCall(request).enqueue(object : Callback {
-        override fun onResponse(call: Call, response: Response) {
-            if (response.isSuccessful) {
-                println("successfully!")
-                println("response -> " + response.body?.string())
-            } else {
-                println("Registration failed: ${response.code} ${response.message}")
-            }
-        }
-
-        override fun onFailure(call: Call, e: IOException) {
-            println("Error: ${e.message}")
-        }
-    })
-
-//    val client = OkHttpClient()
-//
-//    // Создаем GET-запрос
-//    val request = Request.Builder()
-//        .url("https://d4f3-158-160-53-213.ngrok-free.app/users/api/v1/unprotected")  // Указываем URL
-//        .get()  // Метод GET
-//        .build()
-//
-//    // Выполняем запрос асинхронно
-//    client.newCall(request).enqueue(object : Callback {
-//        override fun onResponse(call: Call, response: Response) {
-//            if (response.isSuccessful) {
-//                println("Response: ${response.body?.string()}")
-//            } else {
-//                println("Request failed with code: ${response.code}")
-//            }
-//        }
-//
-//        override fun onFailure(call: Call, e: IOException) {
-//            println("Error: ${e.message}")
-//        }
-//    })
 }
 
 @Composable
