@@ -1,0 +1,16 @@
+export CORE__POSTGRES_DB_LOGIN='admin'
+export CORE__POSTGRES_DB_PASSWORD='pass'
+export CORE__POSTGRES_DB_HOST='localhost'
+export CORE__POSTGRES_DB_PORT=5435
+export CORE__POSTGRES_DB_NAME='core_db'
+export CORE__MAX_CONNECTIONS=1
+export CORE__CONNECTION_IDLE_TIME_SEC=10
+
+export CORE_SERVICE_POSTGRESQL_URL="postgres://${CORE__POSTGRES_DB_LOGIN}:${CORE__POSTGRES_DB_PASSWORD}@${CORE__POSTGRES_DB_HOST}:${CORE__POSTGRES_DB_PORT}/${CORE__POSTGRES_DB_NAME}?sslmode=disable"
+
+export CORE__HTTP_HOST='0.0.0.0'
+export CORE__HTTP_PORT=8002
+# Заменить на GIN_MODE=release во время деплоя
+export GIN_MODE=release
+
+
