@@ -1,12 +1,11 @@
 package com.bemos.schooldiary.presentation.sign_up
 
-import android.widget.Toast
+import android.util.Patterns
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,10 +27,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bemos.schooldiary.presentation.sign_up.model.User
+import com.bemos.schooldiary.domain.models.User
 import com.bemos.schooldiary.presentation.ui.utils.indicator.LoadIndicator
 import com.bemos.schooldiary.presentation.ui.utils.text_field.CustomTextField
 import kotlinx.coroutines.delay
+import org.intellij.lang.annotations.Pattern
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -39,9 +39,6 @@ fun SignUpSchoolChildrenContent(
     modifier: Modifier = Modifier,
     onRegisterClick: (User) -> Unit
 ) {
-
-    val context = LocalContext.current
-
     var name by remember {
         mutableStateOf("")
     }
@@ -52,9 +49,6 @@ fun SignUpSchoolChildrenContent(
         mutableStateOf("")
     }
     var email by remember {
-        mutableStateOf("")
-    }
-    var password by remember {
         mutableStateOf("")
     }
 
@@ -134,17 +128,18 @@ fun SignUpSchoolChildrenContent(
         Spacer(modifier = Modifier.height(40.dp))
         Button(
             modifier = Modifier.fillMaxWidth(),
+            enabled = Patterns.EMAIL_ADDRESS.matcher(email).matches(),
             onClick = {
-                val user = User(
-                    surname = surname,
-                    name = name,
-                    patronymic = patronymic,
-                    email = email
-                )
-                onRegisterClick(
-                    user
-                )
-                isVisible = true
+                    val user = User(
+                        surname = surname,
+                        name = name,
+                        patronymic = patronymic,
+                        email = email
+                    )
+                    onRegisterClick(
+                        user
+                    )
+                    isVisible = true
             }
         ) {
             Text(
