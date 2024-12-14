@@ -19,12 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bemos.schooldiary.presentation.sign_up.model.User
+import com.bemos.schooldiary.domain.models.AuthenticateUser
 import com.bemos.schooldiary.presentation.ui.utils.text_field.CustomTextField
 
 @Composable
 fun SignInContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSignInClick: (AuthenticateUser) -> Unit
 ) {
     var email by remember {
         mutableStateOf("")
@@ -66,11 +67,17 @@ fun SignInContent(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-
+                val user = AuthenticateUser(
+                    email = email,
+                    password = password
+                )
+                onSignInClick(
+                    user
+                )
             }
         ) {
             Text(
-                text = "Register"
+                text = "Confirm"
             )
         }
     }

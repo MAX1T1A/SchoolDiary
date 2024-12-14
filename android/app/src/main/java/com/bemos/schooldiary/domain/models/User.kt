@@ -1,8 +1,8 @@
-package com.bemos.schooldiary.presentation.sign_up.model
+package com.bemos.schooldiary.domain.models
 
 data class User(
     val surname: String,
     val name: String,
     val patronymic: String,
-    val email: String,
+    val email: String
 )

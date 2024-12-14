@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -76,6 +77,10 @@ dependencies {
 
     //Navigation
     implementation(libs.androidx.navigation.compose)
+
+    //Dagger
+    implementation (libs.dagger)
+    kapt (libs.dagger.compiler)
 
     implementation (libs.okhttp)
 }
