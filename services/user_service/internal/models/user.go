@@ -10,6 +10,7 @@ type UserRegisterRequest struct {
 	Name       string `json:"name"`
 	Patronymic string `json:"patronymic"`
 	Email      string `json:"email"`
+	Role       string `json:"role"`
 }
 
 type UserAuthenticateRequest struct {
@@ -18,12 +19,17 @@ type UserAuthenticateRequest struct {
 }
 
 type UserAuthenticateResponse struct {
-	ID int `json:"id"`
+	ID   int    `json:"id"`
+	Role string `json:"role"`
 }
 
 func (c *UserRegisterRequest) UserRegisterValidate() error {
 	if !validators.IsValidEmail(c.Email) {
 		return errors.New("некорректный email")
+	}
+
+	if !validators.IsValidRoleEnum(c.Role) {
+		return errors.New("невереное значение role")
 	}
 
 	return nil

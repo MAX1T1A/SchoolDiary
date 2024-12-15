@@ -13,10 +13,8 @@
 
 # Задаем переменные с именами файлов и переменных окружения
 LOCAL_ENV_FILE := env/local.sh
-TEST_ENV_FILE := env/test.sh
 
 LOCAL_COMPOSE_FILE := docker/local-docker-compose.yml
-TEST_COMPOSE_FILE := docker/test-docker-compose.yml
 
 # Цвета для вывода сообщений
 RED=\033[0;31m
@@ -34,10 +32,6 @@ endef
 ## local: Запуск локальной среды
 local:
 	$(call DOCKER_COMPOSE_UP,$(LOCAL_ENV_FILE),$(LOCAL_COMPOSE_FILE),)
-
-## test: Запуск тестов
-test:
-	$(call DOCKER_COMPOSE_UP,$(TEST_ENV_FILE),$(TEST_COMPOSE_FILE),--build)
 
 # Дополнительные команды для сборки и запуска
 

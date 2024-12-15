@@ -50,7 +50,7 @@ func (f *facade) Authenticate(c *gin.Context) {
 		return
 	}
 
-	token, err := generateJWTToken(resp.ID, []byte(f.jwtConfig.GetJWTSecret()))
+	token, err := generateJWTToken(resp.ID, resp.Role, []byte(f.jwtConfig.GetJWTSecret()))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -64,9 +64,10 @@ func (f *facade) Authenticate(c *gin.Context) {
 	})
 }
 
-func generateJWTToken(userID int, jwtSecret []byte) (string, error) {
+func generateJWTToken(userID int, role string, jwtSecret []byte) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
+		"role":    role,
 		"exp":     time.Now().Add(time.Hour * 72).Unix(), // Токен истекает через 72 часа
 	}
 
