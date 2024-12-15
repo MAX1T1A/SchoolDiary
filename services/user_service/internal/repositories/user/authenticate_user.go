@@ -17,13 +17,13 @@ func (r *repository) AuthenticateUser(ctx context.Context, user models.UserAuthe
 
 	row := r.db.DB().QueryRow(
 		ctx, `
-			SELECT id, password_hash
+			SELECT id, password_hash, role
 			FROM users
 			WHERE email = $1;
 			`,
 		user.Login)
 
-	err := row.Scan(&userAuthenticateResponse.ID, &hashedPassword)
+	err := row.Scan(&userAuthenticateResponse.ID, &hashedPassword, &userAuthenticateResponse.Role)
 	if err != nil {
 		println(user.Login)
 		log.Printf("ошибка при аутентификации пользователя: %v", err)

@@ -8,7 +8,8 @@ import (
 )
 
 type UserAuthResponse struct {
-	ID int `json:"id"`
+	ID   int    `json:"id"`
+	Role string `json:"role"`
 }
 
 func (c *apiClient) Authenticate(login string, password string) (UserAuthResponse, error) {

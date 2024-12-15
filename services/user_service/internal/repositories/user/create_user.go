@@ -23,11 +23,11 @@ func (r *repository) CreateUser(ctx context.Context, user models.UserRegisterReq
 
 	row := r.db.DB().QueryRow(
 		ctx, `
-			INSERT INTO users (surname, name, patronymic, email, password_hash)
-			VALUES ($1, $2, $3, $4, $5)
+			INSERT INTO users (surname, name, patronymic, email, password_hash, role)
+			VALUES ($1, $2, $3, $4, $5, $6)
 			RETURNING id;
 			`,
-		user.Surname, user.Name, user.Patronymic, user.Email, hashedPassword)
+		user.Surname, user.Name, user.Patronymic, user.Email, hashedPassword, user.Role)
 
 	var userID string
 	err = row.Scan(&userID)
