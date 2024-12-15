@@ -4,3 +4,4 @@ export JWT_SECRET='jGtOyTJe/iqB8+de4iiH2Ge1rkC8DvSw/imm0V39Q0uZvo9FcWmdSbLm89ZWl
 export GIN_MODE=debug
 
 export USERS_HTTP_SERVICE_URL=http://172.17.0.1:8001
+export CORE_HTTP_SERVICE_URL=http://172.17.0.1:8002
