@@ -1,6 +1,8 @@
 package com.bemos.schooldiary.presentation.ui.utils.bottom_bar
 
 import com.bemos.schooldiary.R
+import com.bemos.schooldiary.shared.Constants.NAV_SIGN_IN
+import com.bemos.schooldiary.shared.Constants.NAV_SIGN_UP_CHILD
 
 sealed class BottomBar(
     val title: String,
@@ -8,13 +10,13 @@ sealed class BottomBar(
     val unselectedIcon: Int
 ) {
     object Home : BottomBar(
-        title = "home",
+        title = NAV_SIGN_UP_CHILD,
         selectedIcon = R.drawable.rounded_school_24,
         unselectedIcon = R.drawable.rounded_school_24,
     )
 
     object Calendar : BottomBar(
-        title = "calendar",
+        title = NAV_SIGN_IN,
         selectedIcon = R.drawable.rounded_calendar_month_24,
         unselectedIcon = R.drawable.rounded_calendar_month_24,
     )
